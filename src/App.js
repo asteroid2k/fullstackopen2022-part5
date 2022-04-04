@@ -1,24 +1,113 @@
-import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
-import blogService from './services/blogs'
+import { useState, useEffect, useRef } from "react";
+import Blog from "./components/Blog";
+import Login from "./components/Login";
+import blogService from "./services/blogs";
+import loginService from "./services/login";
+import Notification from "./components/notification";
+import AddBlog from "./components/AddBlog";
+import Togglable from "./components/Togglable";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs] = useState([]);
+  const [user, setUser] = useState({});
+  const [notification, setNotification] = useState(null);
+  const [notifType, setNotifType] = useState(null);
+
+  const blogFormRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
+    blogService.getAll().then((data) => setBlogs(data));
+  }, []);
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+    if (loggedUserJSON) {
+      const authUser = JSON.parse(loggedUserJSON);
+      setUser(authUser);
+      blogService.setToken(authUser.token);
+    }
+  }, []);
+
+  const handleLogin = async ({ username, password }) => {
+    try {
+      const authUser = await loginService.login({
+        username,
+        password,
+      });
+
+      window.localStorage.setItem(
+        "loggedBlogappUser",
+        JSON.stringify(authUser)
+      );
+      blogService.setToken(authUser.token);
+      setUser(authUser);
+      notify("Authenticated", "success");
+    } catch (error) {
+      if (error.response) {
+        const { error: errMsg } = error.response.data;
+        notify(errMsg, "error");
+        return;
+      }
+      console.log(error);
+    }
+  };
+  const createPost = async ({ title, author, url }) => {
+    try {
+      const newPost = await blogService.create({
+        title,
+        author,
+        url,
+      });
+      setBlogs(blogs.concat(newPost));
+      notify("Blog added", "success");
+      blogFormRef.current.toggleVisibility();
+    } catch (error) {
+      if (error.response) {
+        const { error: errMsg } = error.response.data;
+        notify(errMsg, "error");
+        return;
+      }
+      console.log(error);
+    }
+  };
+
+  const notify = (message, type) => {
+    setNotification(message);
+    setNotifType(type);
+    setTimeout(() => {
+      setNotification(null);
+      setNotifType(null);
+    }, 4000);
+  };
+  const logout = () => {
+    window.localStorage.clear();
+  };
 
   return (
     <div>
       <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      <Notification message={notification} type={notifType} />
+      {!("token" in user) ? (
+        <Togglable buttonLabel="Login">
+          <Login handleSubmit={handleLogin} />
+        </Togglable>
+      ) : (
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <p>{user.username}</p>
+            <button onClick={logout}>Logout</button>
+          </div>
+          <Togglable buttonLabel="New Post" ref={blogFormRef}>
+            <AddBlog handleSubmit={createPost} />
+          </Togglable>
+        </div>
       )}
-    </div>
-  )
-}
 
-export default App
+      <br />
+      {blogs.map((blog) => (
+        <Blog key={blog.id} blog={blog} />
+      ))}
+    </div>
+  );
+};
+
+export default App;
