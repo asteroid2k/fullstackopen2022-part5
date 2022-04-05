@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
-import Login from "./components/Login";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
-import Notification from "./components/notification";
-import AddBlog from "./components/AddBlog";
-import Togglable from "./components/Togglable";
+import { useState, useEffect, useRef } from 'react';
+import Blog from './components/Blog';
+import Login from './components/Login';
+import blogService from './services/blogs';
+import loginService from './services/login';
+import Notification from './components/notification';
+import AddBlog from './components/AddBlog';
+import Togglable from './components/Togglable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -20,7 +20,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
     if (loggedUserJSON) {
       const authUser = JSON.parse(loggedUserJSON);
       setUser(authUser);
@@ -36,16 +36,16 @@ const App = () => {
       });
 
       window.localStorage.setItem(
-        "loggedBlogappUser",
+        'loggedBlogappUser',
         JSON.stringify(authUser)
       );
       blogService.setToken(authUser.token);
       setUser(authUser);
-      notify("Authenticated", "success");
+      notify('Authenticated', 'success');
     } catch (error) {
       if (error.response) {
         const { error: errMsg } = error.response.data;
-        notify(errMsg, "error");
+        notify(errMsg, 'error');
         return;
       }
       console.log(error);
@@ -59,12 +59,12 @@ const App = () => {
         url,
       });
       setBlogs(blogs.concat(newPost));
-      notify("Blog added", "success");
+      notify('Blog added', 'success');
       blogFormRef.current.toggleVisibility();
     } catch (error) {
       if (error.response) {
         const { error: errMsg } = error.response.data;
-        notify(errMsg, "error");
+        notify(errMsg, 'error');
         return;
       }
       console.log(error);
@@ -77,11 +77,11 @@ const App = () => {
         likes: likes + 1,
       });
       setBlogs(blogs.map((blog) => (blog.id !== id ? blog : edited)));
-      notify("Blog liked", "success");
+      notify('Blog liked', 'success');
     } catch (error) {
       if (error.response) {
         const { error: errMsg } = error.response.data;
-        notify(errMsg, "error");
+        notify(errMsg, 'error');
         return;
       }
       console.log(error);
@@ -89,7 +89,7 @@ const App = () => {
   };
   const deletePost = async ({ id }) => {
     try {
-      const proceed = window.confirm("Are you sure you want to delete?");
+      const proceed = window.confirm('Are you sure you want to delete?');
       if (!proceed) {
         return;
       }
@@ -97,11 +97,11 @@ const App = () => {
         id,
       });
       setBlogs(blogs.filter((blog) => blog.id !== id));
-      notify("Blog removed", "success");
+      notify('Blog removed', 'success');
     } catch (error) {
       if (error.response) {
         const { error: errMsg } = error.response.data;
-        notify(errMsg || "An error occured", "error");
+        notify(errMsg || 'An error occured', 'error');
         return;
       }
       console.log(error);
@@ -136,13 +136,13 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <Notification message={notification} type={notifType} />
-      {!("token" in user) ? (
+      {!('token' in user) ? (
         <Togglable buttonLabel="Login">
           <Login handleSubmit={handleLogin} />
         </Togglable>
       ) : (
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <p>{user.username}</p>
             <button onClick={logout}>Logout</button>
           </div>

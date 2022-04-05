@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const AddBlog = ({ handleSubmit }) => {
-  const [url, setUrl] = useState("");
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
 
   const clearForm = () => {
-    setAuthor("");
-    setTitle("");
-    setUrl("");
+    setAuthor('');
+    setTitle('');
+    setUrl('');
   };
   return (
     <form
