@@ -9,19 +9,25 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
         <p className="title">{blog.title}</p>
         <p className="author">by {blog.author}</p>
-        <button onClick={() => setExpand(!expand)}>
+        <button className="view-btn" onClick={() => setExpand(!expand)}>
           {expand ? 'hide' : 'view'}
         </button>
       </div>
       {expand && (
         <div>
-          <p>{blog.url}</p>
+          <p className="url">{blog.url}</p>
           <span style={{ display: 'flex', alignItems: 'center' }}>
-            <p>likes {blog.likes}</p>{' '}
-            <button onClick={() => handleLike({ id, likes })}>like</button>
+            <p className="likes">likes {blog.likes}</p>{' '}
+            <button
+              className="like-btn"
+              onClick={() => handleLike({ id, likes })}
+            >
+              like
+            </button>
           </span>
           <p>{blog.user.username}</p>
           <button
+            className="delete-btn"
             style={{ border: '1px solid red' }}
             onClick={() => handleDelete({ id })}
           >
