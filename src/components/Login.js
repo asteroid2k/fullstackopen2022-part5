@@ -9,6 +9,7 @@ const Login = ({ handleSubmit }) => {
   };
   return (
     <form
+      id="login-form"
       onSubmit={(e) => {
         e.preventDefault();
         handleSubmit({ username, password });
@@ -37,7 +38,9 @@ const Login = ({ handleSubmit }) => {
           }}
         />
       </div>
-      <button type="submit">Login</button>
+      <button id="login-btn" type="submit">
+        Login
+      </button>
     </form>
   );
 };

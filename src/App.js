@@ -118,6 +118,7 @@ const App = () => {
   };
   const logout = () => {
     window.localStorage.clear();
+    setUser({});
   };
 
   const sortPosts = (arr) => {
@@ -131,15 +132,14 @@ const App = () => {
       return 0;
     });
   };
+  const loggedIn = 'token' in user;
 
   return (
     <div>
-      <h2>blogs</h2>
+      <h2>{loggedIn ? 'Blogs' : 'Log In'}</h2>
       <Notification message={notification} type={notifType} />
-      {!('token' in user) ? (
-        <Togglable buttonLabel="Login">
-          <Login handleSubmit={handleLogin} />
-        </Togglable>
+      {!loggedIn ? (
+        <Login handleSubmit={handleLogin} />
       ) : (
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -153,14 +153,15 @@ const App = () => {
       )}
 
       <br />
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={likePost}
-          handleDelete={deletePost}
-        />
-      ))}
+      {loggedIn &&
+        blogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleLike={likePost}
+            handleDelete={deletePost}
+          />
+        ))}
     </div>
   );
 };

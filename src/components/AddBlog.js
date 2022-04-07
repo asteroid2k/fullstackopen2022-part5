@@ -45,7 +45,9 @@ const AddBlog = ({ handleSubmit }) => {
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>
-      <button type="submit">Post</button>
+      <button id="post-btn" type="submit">
+        Post
+      </button>
     </form>
   );
 };

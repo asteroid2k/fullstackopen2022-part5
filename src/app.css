@@ -1,8 +1,10 @@
 .err {
   border: 2px solid red;
+  color: red;
 }
 .success {
   border: 2px solid green;
+  color: green;
 }
 .blog-post {
   border: 1px solid gray;
